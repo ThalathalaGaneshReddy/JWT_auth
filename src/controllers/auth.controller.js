@@ -1,15 +1,14 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const ownerModel = require("../models/auth.model");
+const userModel = require("../models/auth.model");
 const generateTokensAndSendResponse = require("../utils/generateTokens");
 const { ACCESS_TOKEN_EXPIRE_TIME } = require("../utils/constants");
 
 const Register = async (req, res) => {
   try {
-    const { name, email, phoneNumber, hostelName, hostelAddress, password } =
-      req.body;
-    const exsitingOwner = await ownerModel.findOne({ email });
-    if (exsitingOwner) {
+    const { name, email, password } = req.body;
+    const exsitingUser = await userModel.findOne({ email });
+    if (exsitingUser) {
       res.status(409).json({
         success: false,
         message: "Email already exists",
@@ -17,7 +16,7 @@ const Register = async (req, res) => {
     }
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const owner = await ownerModel.create({
+    const owner = await userModel.create({
       name,
       email,
       phoneNumber,
@@ -37,16 +36,16 @@ const Register = async (req, res) => {
 const Login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const exsitingOwner = await ownerModel.findOne({ email });
-    if (exsitingOwner) {
+    const exsitingUser = await userModel.findOne({ email });
+    if (exsitingUser) {
       const isPasswordCorrect = await bcrypt.compare(
         password,
-        exsitingOwner.password,
+        exsitingUser.password,
       );
       if (isPasswordCorrect) {
         generateTokensAndSendResponse(
           res,
-          exsitingOwner,
+          exsitingUser,
           "User logged in successfully",
         );
       } else {

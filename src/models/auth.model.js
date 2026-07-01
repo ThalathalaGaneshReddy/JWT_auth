@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const ownerSchema = new mongoose.Schema(
+const userSchema = new mongoose.Schema(
   {
     name: {
       type: String,
@@ -16,7 +16,6 @@ const ownerSchema = new mongoose.Schema(
     },
     phoneNumber: {
       type: String,
-      required: true,
       unique: true,
       match: /^[6-9]\d{9}$/,
     },
@@ -26,15 +25,7 @@ const ownerSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      default: "owner",
-    },
-    hostelName: {
-      type: String,
-      required: true,
-    },
-    hostelAddress: {
-      type: String,
-      required: true,
+      default: "admin",
     },
   },
   {
@@ -42,4 +33,4 @@ const ownerSchema = new mongoose.Schema(
   },
 );
 
-module.exports = mongoose.model("Owners", ownerSchema);
+module.exports = mongoose.model("Users", userSchema);
